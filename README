@@ -1,0 +1,11 @@
+My first GitHub project, a Discord bot that will give the user some permissions (and thus access to certain channels) by matching to a JSON file "units.json" that has been included. 
+
+Create JSON file, "config.json" of the format below:
+
+{
+  "token" : "",
+  "ownerID" : "",
+  "game" : ""
+}
+
+Then run "Bot.java"
