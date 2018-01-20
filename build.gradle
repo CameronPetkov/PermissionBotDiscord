@@ -1,0 +1,28 @@
+plugins {
+    id'java'
+    id'application'
+    id'com.github.johnrengelman.shadow' version '2.0.1'
+}
+
+mainClassName = 'me.name.bot.Bot'
+
+version '1.0'
+def jdaVersion = '3.4.0_317'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "net.dv8tion:JDA:$jdaVersion"
+    compile 'com.jagrosh:JDA-Utilities:1.9'
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.10.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.10.0'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.10.0'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+}
+
+compileJava.options.encoding = 'UTF-8'

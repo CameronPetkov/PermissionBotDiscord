@@ -1,0 +1,398 @@
+[
+  {
+    "unitCode": "coms1000",
+    "fullName": "science communications",
+    "abbreviation" : ["sc"]
+  },
+  {
+    "unitCode" : "stat1002",
+    "fullName" : "statistical data analysis",
+    "abbreviation" : ["sda"]
+  },
+  {
+    "unitCode" : "enen2000",
+    "fullName" : "engineering sustainable development",
+    "abbreviation" : ["esd"]
+  },
+  {
+    "unitCode" : "blaw2000",
+    "fullName" : "law for engineers",
+    "abbreviation" : ["law","blaw"]
+  },
+  {
+    "unitCode" : "mgmt3000",
+    "fullName" : "engineering management",
+    "abbreviation" : ["em"]
+  },
+  {
+    "unitCode": "mxen3004",
+    "fullName": "dynamic modelling and control",
+    "abbreviation" : ["dmc"]
+  },
+  {
+    "unitCode": "icte3002",
+    "fullName": "human computer interface",
+    "abbreviation" : ["hci"]
+  },
+  {
+    "unitCode": "comp1000",
+    "fullName": "unix and c programming",
+    "abbreviation" : ["ucp"]
+  },
+  {
+    "unitCode": "comp1001",
+    "fullName": "object oriented program design",
+    "abbreviation" : ["oopd"]
+  },
+  {
+    "unitCode": "comp1002",
+    "fullName": "data structures and algorithms",
+    "abbreviation" : ["dsa"]
+  },
+  {
+    "unitCode": "comp1006",
+    "fullName": "foundations of computer science",
+    "abbreviation" : ["fcs"]
+  },
+  {
+    "unitCode": "comp2000",
+    "fullName": "computer systems",
+    "abbreviation" : ["compsys"]
+  },
+  {
+    "unitCode": "comp2002",
+    "fullName": "unix systems programming",
+    "abbreviation" : ["usp"]
+  },
+  {
+    "unitCode": "comp2003",
+    "fullName": "object oriented software engineering",
+    "abbreviation" : ["oose"]
+  },
+  {
+    "unitCode": "comp2004",
+    "fullName": "computer graphics",
+    "abbreviation" : ["cg"]
+  },
+  {
+    "unitCode": "comp2005",
+    "fullName": "computing topics",
+    "abbreviation" : ["ct"]
+  },
+  {
+    "unitCode": "comp2006",
+    "fullName": "operating systems",
+    "abbreviation" : ["os"]
+  },
+  {
+    "unitCode": "comp2007",
+    "fullName": "programming languages",
+    "abbreviation" : ["pl"]
+  },
+  {
+    "unitCode": "comp2008",
+    "fullName": "mobile application development",
+    "abbreviation" : ["mad"]
+  },
+  {
+    "unitCode": "comp3001",
+    "fullName": "design and analysis of algorithms",
+    "abbreviation" : ["daa"]
+  },
+  {
+    "unitCode": "comp3002",
+    "fullName": "theoretical foundations of computer science",
+    "abbreviation" : ["tfcs"]
+  },
+  {
+    "unitCode": "comp3003",
+    "fullName": "software engineering concepts",
+    "abbreviation" : ["sec"]
+  },
+  {
+    "unitCode": "comp3006",
+    "fullName": "artificial and machine intelligence",
+    "abbreviation" : ["ami"]
+  },
+  {
+    "unitCode": "comp3007",
+    "fullName": "machine perception",
+    "abbreviation" : ["mp"]
+  },
+  {
+    "unitCode": "comp3008",
+    "fullName": "distributed computing",
+    "abbreviation" : ["dc"]
+  },
+  {
+    "unitCode": "comp4000",
+    "fullName": "computer science honours dissertation",
+    "abbreviation" : ["cshd"]
+  },
+  {
+    "unitCode": "comp4002",
+    "fullName": "extended distributed computing",
+    "abbreviation" : ["edc"]
+  },
+  {
+    "unitCode": "elen2000",
+    "fullName": "electrical circuits",
+    "abbreviation" : ["ec"]
+  },
+  {
+    "unitCode": "elen2001",
+    "fullName": "electromagnetic and electromechanical energy conversion",
+    "abbreviation" : ["eeec"]
+  },
+  {
+    "unitCode": "elen2002",
+    "fullName": "transmission and interface design",
+    "abbreviation" : ["tid"]
+  },
+  {
+    "unitCode": "elen3002",
+    "fullName": "engineering electromagnetics and transmission lines",
+    "abbreviation" : ["eetl"]
+  },
+  {
+    "unitCode": "elen3004",
+    "fullName": "renewable energy principles",
+    "abbreviation" : ["rep"]
+  },
+  {
+    "unitCode": "eten1000",
+    "fullName": "electronics",
+    "abbreviation" : ["elec"]
+  },
+  {
+    "unitCode": "eten2000",
+    "fullName": "signals and systems",
+    "abbreviation" : ["ss","signals","signal"]
+  },
+  {
+    "unitCode": "eten2001",
+    "fullName": "electronic fundamentals",
+    "abbreviation" : ["ef"]
+  },
+  {
+    "unitCode": "eten3000",
+    "fullName": "digital signal processing",
+    "abbreviation" : ["dsp"]
+  },
+  {
+    "unitCode": "eten3002",
+    "fullName": "electronic design",
+    "abbreviation" : ["ed"]
+  },
+  {
+    "unitCode": "eten4001",
+    "fullName": "instrumentation and control",
+    "abbreviation" : ["ic"]
+  },
+  {
+    "unitCode": "cmpe1000",
+    "fullName": "hardware fundamentals",
+    "abbreviation" : ["hf"]
+  },
+  {
+    "unitCode": "cmpe2000",
+    "fullName": "data communications and network management",
+    "abbreviation" : ["dcnm"]
+  },
+  {
+    "unitCode": "cmpe2001",
+    "fullName": "foundations of digital design",
+    "abbreviation" : ["fdd"]
+  },
+  {
+    "unitCode": "cmpe2002",
+    "fullName": "requirements engineering",
+    "abbreviation" : ["re"]
+  },
+  {
+    "unitCode": "cmpe2003",
+    "fullName": "microcomputers",
+    "abbreviation" : ["micro"]
+  },
+  {
+    "unitCode": "cmpe3000",
+    "fullName": "data communications and networking",
+    "abbreviation" : ["dcn"]
+  },
+  {
+    "unitCode": "cmpe3001",
+    "fullName": "embedded systems engineering",
+    "abbreviation" : ["ese"]
+  },
+  {
+    "unitCode": "cmpe3002",
+    "fullName": "computer technology project 1",
+    "abbreviation" : ["ctp1"]
+  },
+  {
+    "unitCode": "cmpe3003",
+    "fullName": "computer technology project 2",
+    "abbreviation" : ["ctp2"]
+  },
+  {
+    "unitCode": "cmpe3004",
+    "fullName": "network engineering",
+    "abbreviation" : ["ne"]
+  },
+  {
+    "unitCode": "cmpe3006",
+    "fullName": "advanced digital design",
+    "abbreviation" : ["add"]
+  },
+  {
+    "unitCode": "cmpe3008",
+    "fullName": "software engineering testing",
+    "abbreviation" : ["set"]
+  },
+  {
+    "unitCode": "cmpe4001",
+    "fullName": "extended software engineering testing",
+    "abbreviation" : ["eset"]
+  },
+  {
+    "unitCode": "cmpe4003",
+    "fullName": "concurrent systems",
+    "abbreviation" : ["consys"]
+  },
+  {
+    "unitCode": "isec2000",
+    "fullName": "fundamental concepts of cryptography",
+    "abbreviation" : ["fcc"]
+  },
+  {
+    "unitCode": "isec2001",
+    "fullName": "fundamental concepts of data security",
+    "abbreviation" : ["fcds"]
+  },
+  {
+    "unitCode": "isec3002",
+    "fullName": "penetration testing and defence",
+    "abbreviation" : ["ptd"]
+  },
+  {
+    "unitCode": "isec3003",
+    "fullName": "cyber security concepts",
+    "abbreviation" : ["csc"]
+  },
+  {
+    "unitCode": "isec3004",
+    "fullName": "cyber crime and security enhanced programming",
+    "abbreviation" : ["ccsep"]
+  },
+  {
+    "unitCode": "isec3005",
+    "fullName": "cyber security intrusion detection system and incident handling",
+    "abbreviation" : ["csidsih"]
+  },
+  {
+    "unitCode": "eeet4000",
+    "fullName": "engineering research project 1",
+    "abbreviation" : ["erp1"]
+  },
+  {
+    "unitCode": "eeet4001",
+    "fullName": "engineering research project 2",
+    "abbreviation" : ["erp2"]
+  },
+  {
+    "unitCode": "cnco2000",
+    "fullName": "computer communications",
+    "abbreviation" : ["cc"]
+  },
+  {
+    "unitCode": "cnco3000",
+    "fullName": "distributed networks",
+    "abbreviation" : ["dn"]
+  },
+  {
+    "unitCode": "cnco3001",
+    "fullName": "network systems design",
+    "abbreviation" : ["nsd"]
+  },
+  {
+    "unitCode": "cnco3002",
+    "fullName": "advanced computer communications",
+    "abbreviation" : ["acc"]
+  },
+  {
+    "unitCode": "cnco4000",
+    "fullName": "computer science topics",
+    "abbreviation" : ["cst"]
+  },
+  {
+    "unitCode": "math1015",
+    "fullName": "linear algebra 1",
+    "abbreviation" : ["la1"]
+  },
+  {
+    "unitCode": "math1016",
+    "fullName": "calculus 1",
+    "abbreviation" : ["c1"]
+  },
+  {
+    "unitCode": "math2007",
+    "fullName": "mathematics and probability theory",
+    "abbreviation" : ["mpt"]
+  },
+  {
+    "unitCode": "isad1000",
+    "fullName": "introduction to software engineering",
+    "abbreviation" : ["ise"]
+  },
+  {
+    "unitCode": "isad3000",
+    "fullName": "capstone computing project 1",
+    "abbreviation" : ["ccp1"]
+  },
+  {
+    "unitCode": "isad3001",
+    "fullName": "capstone computing project 2",
+    "abbreviation" : ["ccp2"]
+  },
+  {
+    "unitCode": "isad3002",
+    "fullName": "software metrics",
+    "abbreviation" : ["sm"]
+  },
+  {
+    "unitCode": "isad4002",
+    "fullName": "extended software metrics",
+    "abbreviation" : ["esm"]
+  },
+  {
+    "unitCode": "comt3000",
+    "fullName": "communications engineering",
+    "abbreviation" : ["ce"]
+  },
+  {
+    "unitCode": "comt3002",
+    "fullName": "wireless data networks",
+    "abbreviation" : ["wdn"]
+  },
+  {
+    "unitCode": "comt4003",
+    "fullName": "mobile radio communications",
+    "abbreviation" : ["mrc"]
+  },
+  {
+    "unitCode": "isys1001",
+    "fullName": "database systems",
+    "abbreviation" : ["ds", "dbs"]
+  },
+  {
+    "unitCode": "isys2012",
+    "fullName": "information security",
+    "abbreviation" : ["is"]
+  },
+  {
+    "unitCode": "npsc4000",
+    "fullName": "honours science research methodologies 4",
+    "abbreviation" : ["hsrm4"]
+  }
+
+]
