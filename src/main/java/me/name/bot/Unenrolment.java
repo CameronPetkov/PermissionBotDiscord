@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class Unenrolment extends Command {
@@ -21,8 +22,12 @@ public class Unenrolment extends Command {
         String[] args = event.getArgs().split(",");     //Every argument
         String[] unenrols = new String[args.length];         //Accepted units that actually exist
 
+        LocalDateTime timeStamp = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String time = timeStamp.format(formatter);
+
         IO io = new IO();
-        io.write(LocalDateTime.now(), event);
+        io.write(time, event);
 
         event.getMessage().delete().queue();                 //Delete user message
 
@@ -54,31 +59,39 @@ public class Unenrolment extends Command {
                     //if the argument matches to any JSON unit (by unitcode, name, or abbreviation)
 
                 int response = eh.checkInput(arg, foundunit, unenrols, event); //pass the argument, the matched JSON unit, the successful enrolment array, and the trigger event
+                String msg = null;
                 switch (response) {
                     case 100: //if the argument is enrolled into and is to be unenrolled from
                         unenrols[ii] = foundunit.getUnitCode(); //fill array with unenrolled unit
 
                         Role role = event.getGuild().getRolesByName(foundunit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
                         event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), role).queue(); //remove that role from the user
-                        event.replyInDm("Removed unit: " + WordUtils.capitalize(foundunit.getFullName()));
+                        msg = "Removed unit: " + WordUtils.capitalize(foundunit.getFullName());
                         changes = true;
                         break;
                     case 200: //if the argument was already stated previously
-                        event.replyInDm("Unit already unenrolled from: " + WordUtils.capitalize(foundunit.getFullName()));
+                        msg = "Unit already unenrolled from: " + WordUtils.capitalize(foundunit.getFullName());
                         break;
                     case 300: //if the argument was not enrolled into anyway
-                        event.replyInDm("Unit already unenrolled from: " + WordUtils.capitalize(foundunit.getFullName()));
+                        msg = "Unit already unenrolled from: " + WordUtils.capitalize(foundunit.getFullName());
                         break;
                     default:   //this should never occur
                         break;
                 }
+                event.replyInDm(msg);
+                io.write(msg);
             }
         }
+
+        String result;
         if(changes) { //i.e. a unit has been unenrolled from
-            event.replyInDm("**Success!** Datetime of changes: " + LocalDateTime.now());
+            result = "**Success!** Timestamp: " + time;
         }
         else {
-            event.replyInDm("**Failure!** No changes were made to enrolment.");
+            result = "**Failure!** No changes were made to enrolment. Timestamp: " + time;
         }
+        event.replyInDm(result);
+        io.write(result);
+        io.write("");
     }
 }
