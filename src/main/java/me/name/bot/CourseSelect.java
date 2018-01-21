@@ -32,7 +32,7 @@ public class CourseSelect extends Command {
         }
 
         String msg;
-        if(args[0].equals("add")) { //!course add
+        if(args[0].equals("add") || args[0].equals("enrol") || args[0].equals("enroll") || args[0].equals("enrols") || args[0].equals("enrolls")) {
             int choose = 0;
             try {
                 choose = majorChoice(args[1]); //pass through argument and match with one of the options
@@ -60,7 +60,7 @@ public class CourseSelect extends Command {
                     break;
             }
         }
-        else if(args[0].equals("remove")) {
+        else if(args[0].equals("remove") || args[0].equals("unenrol") || args[0].equals("unenroll") || args[0].equals("unenrols") || args[0].equals("unenrolls")) {
             int choose = 0;
             try {
                 choose = majorChoice(args[1]); //pass through argument and match with one of the options
