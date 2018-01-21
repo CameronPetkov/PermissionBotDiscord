@@ -21,8 +21,10 @@ public class Enrolment extends Command {
     protected void execute(CommandEvent event) {
         String[] args = event.getArgs().split(",");   //Every argument
         String[] enrols = new String[args.length];         //Accepted units that actually exist
+        IO io = new IO();
+        io.write(LocalDateTime.now(), event);
         event.getMessage().delete().queue();               //Delete user message
-
+        //event.replyInDm(event.getMember().getRoles().get(0).getName());
         Unit foundunit;
         Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);                 //load JSON
         EnrolmentHelper eh = new EnrolmentHelper();        //helper class for enrolment/unenrolment class
