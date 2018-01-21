@@ -26,21 +26,17 @@ public class Enrolment extends Command {
         io.write(LocalDateTime.now(), event);
 
         event.getMessage().delete().queue();               //Delete user message
-        //event.replyInDm(event.getMember().getRoles().get(0).getName());
         Unit foundunit;
         Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);                 //load JSON
         EnrolmentHelper eh = new EnrolmentHelper();        //helper class for enrolment/unenrolment class
 
         boolean changes = false;
-
         /* Uncomment for testing enrolment into ALL units (using format !enrol all)
 
         if (args[0].toLowerCase().equals("all")) { //if argument is "all" i.e. !enrol all
             event.replyInDm("**Enrolling into all available units.**");
             for (int ii = 0; ii < event.getGuild().getRoles().size(); ii++) {               //go through all roles in the server
-                String roles = event.getGuild().getRoles().get(ii).toString();              //convert role to string
-                roles = roles.substring(2, roles.indexOf("("));                             //then string can be truncated to "comp1000" instead of "R:comp1000(238923838383)"
-                final String role = roles;                                                  //needs to be final to filter and match
+                String role = event.getGuild().getRoles().get(0).getName();
                 if (Arrays.stream(units).filter(x -> x.getUnitCode().equalsIgnoreCase(role)).findFirst().orElse(null) != null) {
                 //if the guild's role matches the unitcode of any JSON unitcode, then add that role to the member
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoles().get(ii)).queue();
