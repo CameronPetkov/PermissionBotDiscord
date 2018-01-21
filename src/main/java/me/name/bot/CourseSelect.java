@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CourseSelect extends Command {
     public CourseSelect() {
@@ -17,60 +18,81 @@ public class CourseSelect extends Command {
     protected void execute(CommandEvent event) {
         String[] args = event.getArgs().split("\\s+"); //split by space
 
+        LocalDateTime timeStamp = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String time = timeStamp.format(formatter);
+
         IO io = new IO();
-        io.write(LocalDateTime.now(), event);
+        io.write(time, event);
 
         event.getMessage().delete().queue(); //Delete user message
 
-        for(int ii=0; ii<2; ii++) { //only 2 arguments to cycle through
+        for(int ii=0; ii<args.length; ii++) {
             args[ii] = args[ii].toLowerCase(); //formatting
         }
 
+        String msg;
         if(args[0].equals("add")) { //!course add
-            int choose = majorChoice(args[1]); //pass through argument and match with one of the options
+            int choose = 0;
+            try {
+                choose = majorChoice(args[1]); //pass through argument and match with one of the options
+            }
+            catch (IndexOutOfBoundsException e) {
+                msg = "Input correct parameter (ee/cs/eecs). Timestamp: ";
+            }
             switch(choose) {
                 case 1: //CS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0)).queue();   //add CS
-                    event.replyInDm("**Course is now CS.** Datetime of changes: " + LocalDateTime.now());
+                    msg = "**Course is now CS.** Timestamp: ";
                     break;
                 case 2: //EE
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0)).queue();  //remove CS
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //add EE
-                    event.replyInDm("**Course is now EE.** Datetime of changes: " + LocalDateTime.now());
+                    msg = "**Course is now EE.** Timestamp: ";
                     break;
                 case 3: //EECS
                     event.getGuild().getController().addRolesToMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //add EE and CS
-                    event.replyInDm("**Course is now EECS.** Datetime of changes: " + LocalDateTime.now());
+                    msg = "**Course is now EECS.** Timestamp: ";
                     break;
                 default:
-                    event.replyInDm("Input correct parameter.");
+                    msg = "Input correct parameter (ee/cs/eecs). Timestamp: ";
                     break;
             }
         }
         else if(args[0].equals("remove")) {
-            int choose = majorChoice(args[1]);
+            int choose = 0;
+            try {
+                choose = majorChoice(args[1]); //pass through argument and match with one of the options
+            }
+            catch (IndexOutOfBoundsException e) {
+                msg = "Input correct parameter (ee/cs/eecs). Timestamp: ";
+            }
             switch(choose) {
                 case 1: //CS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0)).queue(); //remove CS
-                    event.replyInDm("**Removed CS from course.** Datetime of changes: " + LocalDateTime.now());
+                    msg = "**Removed CS from course.** Timestamp: ";
                     break;
                 case 2: //EE
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE
-                    event.replyInDm("**Removed EE from course.** Datetime of changes: " + LocalDateTime.now());
+                   msg = "**Removed EE from course.** Timestamp: ";
                     break;
                 case 3: //EECS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE and CS
-                    event.replyInDm("**Removed EECS from course.** Datetime of changes: " + LocalDateTime.now());
+                    msg = "**Removed EECS from course.** Timestamp: ";
                     break;
                 default:
-                    event.replyInDm("Input correct parameter.");
+                    msg = "Input correct parameter (ee/cs/eecs). Timestamp: ";
                     break;
             }
         }
         else {
-            event.replyInDm("Command usage: !course <add>/<minus>.");
+            msg = "Command usage: !course <add>/<minus>. Timestamp: ";
         }
+
+        event.replyInDm(msg + time);
+        io.write(msg + time);
+        io.write("");
     }
 
     private int majorChoice(String choice) {

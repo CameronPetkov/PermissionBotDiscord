@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Helper extends Command {
 
@@ -15,8 +16,13 @@ public class Helper extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
+        LocalDateTime timeStamp = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String time = timeStamp.format(formatter);
+
         IO io = new IO();
-        io.write(LocalDateTime.now(), event);
+        io.write(time, event);
+        io.write("");
 
         event.getMessage().delete().queue(); //Delete user message
         event.replyInDm("Hi there! This bot is designed to quickly and automatically \"enrol\" you into the server, giving you the permissions needed to view text and voice channels for the relevant units. \n");

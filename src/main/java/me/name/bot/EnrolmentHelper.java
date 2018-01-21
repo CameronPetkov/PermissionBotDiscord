@@ -24,13 +24,20 @@ public class EnrolmentHelper {
             }
         }
         else {
-            if (arg == null || arg.isEmpty() || !Character.isLetter(arg.charAt(0))) {
+            String msg;
+            if (arg.equals(null) || arg.isEmpty()) {
                 //if the argument is null, empty, or does not start with a character i.e. "123" or "@@@"
-                event.replyInDm("Unit code/name needs to start with a letter: " + arg);
+                msg = "Unit code/name needs to start with a letter: ";
+            }
+            else if (!Character.isLetter(arg.charAt(0))) {
+                msg = "Unit code/name needs to start with a letter: " + arg;
             }
             else { //otherwise the unit just does not exist and is in the format "asdfsd" or "sksk1111", etc
-                event.replyInDm("Unit does not exist, double check the unit code/name: " + arg);
+                msg = "Unit does not exist, double check the unit code/name: " + arg;
             }
+            event.replyInDm(msg);
+            IO io = new IO();
+            io.write(msg);
         }
 
         return(inputDecision);
