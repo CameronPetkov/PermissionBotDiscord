@@ -67,19 +67,23 @@ public class Unenrolment extends Command {
                         Role role = event.getGuild().getRolesByName(foundunit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
                         event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), role).queue(); //remove that role from the user
                         msg = "Removed unit: " + WordUtils.capitalize(foundunit.getFullName());
+                        event.replyInDm(msg);
+                        io.write(msg);
                         changes = true;
                         break;
                     case 200: //if the argument was already stated previously
                         msg = "Unit already unenrolled from: " + WordUtils.capitalize(foundunit.getFullName());
+                        event.replyInDm(msg);
+                        io.write(msg);
                         break;
                     case 300: //if the argument was not enrolled into anyway
                         msg = "Unit already unenrolled from: " + WordUtils.capitalize(foundunit.getFullName());
+                        event.replyInDm(msg);
+                        io.write(msg);
                         break;
                     default:   //this should never occur
                         break;
                 }
-                event.replyInDm(msg);
-                io.write(msg);
             }
         }
 

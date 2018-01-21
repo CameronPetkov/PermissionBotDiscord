@@ -26,10 +26,10 @@ public class EnrolmentHelper {
         else {
             String msg;
             if (arg.equals(null) || arg.isEmpty()) {
-                //if the argument is null, empty, or does not start with a character i.e. "123" or "@@@"
+                //if the argument is null, empty
                 msg = "Unit code/name needs to start with a letter: ";
             }
-            else if (!Character.isLetter(arg.charAt(0))) {
+            else if (!Character.isLetter(arg.charAt(0))) { //does not start with a character i.e. "123" or "@@@"
                 msg = "Unit code/name needs to start with a letter: " + arg;
             }
             else { //otherwise the unit just does not exist and is in the format "asdfsd" or "sksk1111", etc

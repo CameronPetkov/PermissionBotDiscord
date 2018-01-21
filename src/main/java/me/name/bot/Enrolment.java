@@ -70,10 +70,14 @@ public class Enrolment extends Command {
                 int response = eh.checkInput(arg, foundunit, enrols, event); //pass the argument, the matched JSON unit, the successful enrolment array, and the trigger event
                 switch (response) {
                     case 100: //if the argument is already found enrolled into
-                       msg = "Unit already enrolled into: " + WordUtils.capitalize(foundunit.getFullName());
+                        msg = "Unit already enrolled into: " + WordUtils.capitalize(foundunit.getFullName());
+                        event.replyInDm(msg);
+                        io.write(msg);
                         break;
                     case 200: //if the argument was already stated previously
                         msg = "Unit already enrolled into: " + WordUtils.capitalize(foundunit.getFullName());
+                        event.replyInDm(msg);
+                        io.write(msg);
                         break;
                     case 300: //otherwise enrol
                         enrols[ii] = foundunit.getUnitCode(); //fill array with enrolled unit
@@ -81,6 +85,8 @@ public class Enrolment extends Command {
                         Role role = event.getGuild().getRolesByName(foundunit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
                         event.getGuild().getController().addSingleRoleToMember(event.getMember(), role).queue(); //add that role to the user
                         msg = "Added unit: " + WordUtils.capitalize(foundunit.getFullName());
+                        event.replyInDm(msg);
+                        io.write(msg);
                         changes = true;
                         break;
                     default: //this should never occur
@@ -90,9 +96,9 @@ public class Enrolment extends Command {
         }
         else {
             msg = "Enrol into your major first (ee, cs or both). Use **!course add <major>**, where major is cs, ee or eecs.";
+            event.replyInDm(msg);
+            io.write(msg);
         }
-        event.replyInDm(msg);
-        io.write(msg);
         // }
 
         String result;
