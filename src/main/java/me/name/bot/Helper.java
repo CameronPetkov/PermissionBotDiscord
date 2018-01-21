@@ -3,6 +3,8 @@ package me.name.bot;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
+import java.time.LocalDateTime;
+
 public class Helper extends Command {
 
     public Helper() {
@@ -13,6 +15,9 @@ public class Helper extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
+        IO io = new IO();
+        io.write(LocalDateTime.now(), event);
+
         event.getMessage().delete().queue(); //Delete user message
         event.replyInDm("Hi there! This bot is designed to quickly and automatically \"enrol\" you into the server, giving you the permissions needed to view text and voice channels for the relevant units. \n");
 

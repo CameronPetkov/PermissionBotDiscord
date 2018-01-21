@@ -12,7 +12,7 @@ public class IO {
         PrintWriter pw;
 
         try {
-            fileStrm = new FileOutputStream("DiscordBotCommandUsage.txt");
+            fileStrm = new FileOutputStream("DiscordBotCommandUsage.txt", true);
             pw = new PrintWriter(fileStrm);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");

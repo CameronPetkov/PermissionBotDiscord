@@ -16,6 +16,10 @@ public class CourseSelect extends Command {
     @Override
     protected void execute(CommandEvent event) {
         String[] args = event.getArgs().split("\\s+"); //split by space
+
+        IO io = new IO();
+        io.write(LocalDateTime.now(), event);
+
         event.getMessage().delete().queue(); //Delete user message
 
         for(int ii=0; ii<2; ii++) { //only 2 arguments to cycle through

@@ -20,6 +20,10 @@ public class Unenrolment extends Command {
     protected void execute(CommandEvent event) {
         String[] args = event.getArgs().split(",");     //Every argument
         String[] unenrols = new String[args.length];         //Accepted units that actually exist
+
+        IO io = new IO();
+        io.write(LocalDateTime.now(), event);
+
         event.getMessage().delete().queue();                 //Delete user message
 
         Unit foundunit;
