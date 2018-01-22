@@ -56,30 +56,34 @@ public class Enrolment extends Command {
                         || x.getFullName().equalsIgnoreCase(arg) || x.getUnitCode().equalsIgnoreCase(arg)).findFirst().orElse(null);
                 //if the argument matches to any JSON unit (by unitcode, name, or abbreviation)
 
-                int response = EnrolmentHelper.checkInput(arg, foundUnit, enrols, event); //pass the argument, the matched JSON unit, the successful enrolment array, and the trigger event
-                switch (response) {
-                    case 100: //if the argument is already found enrolled into
-                        msg = "Unit already enrolled into: " + WordUtils.capitalize(foundUnit.getFullName());
-                        event.replyInDm(msg);
-                        IO.write(msg);
-                        break;
-                    case 200: //if the argument was already stated previously
-                        msg = "Unit already enrolled into: " + WordUtils.capitalize(foundUnit.getFullName());
-                        event.replyInDm(msg);
-                        IO.write(msg);
-                        break;
-                    case 300: //otherwise enrol
-                        enrols[ii] = foundUnit.getUnitCode(); //fill array with enrolled unit
+                if(foundUnit != null) {
+                    switch (EnrolmentHelper.checkUnitInput(foundUnit, enrols, event)) {
+                        case 100: //if the argument is already found enrolled into
+                            msg = "Unit already enrolled into: " + WordUtils.capitalize(foundUnit.getFullName());
+                            event.replyInDm(msg);
+                            IO.write(msg);
+                            break;
+                        case 200: //if the argument was already stated previously
+                            msg = "Unit already enrolled into: " + WordUtils.capitalize(foundUnit.getFullName());
+                            event.replyInDm(msg);
+                            IO.write(msg);
+                            break;
+                        case 300: //otherwise enrol
+                            enrols[ii] = foundUnit.getUnitCode(); //fill array with enrolled unit
 
-                        Role role = event.getGuild().getRolesByName(foundUnit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
-                        event.getGuild().getController().addSingleRoleToMember(event.getMember(), role).queue(); //add that role to the user
-                        msg = "Added unit: " + WordUtils.capitalize(foundUnit.getFullName());
-                        event.replyInDm(msg);
-                        IO.write(msg);
-                        changes = true;
-                        break;
-                    default: //this should never occur
-                        break;
+                            Role role = event.getGuild().getRolesByName(foundUnit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
+                            event.getGuild().getController().addSingleRoleToMember(event.getMember(), role).queue(); //add that role to the user
+                            msg = "Added unit: " + WordUtils.capitalize(foundUnit.getFullName());
+                            event.replyInDm(msg);
+                            IO.write(msg);
+                            changes = true;
+                            break;
+                        default: //this should never occur
+                            break;
+                    }
+                }
+                else {
+                    EnrolmentHelper.giveErrorMessage(arg, event);
                 }
             }
         }

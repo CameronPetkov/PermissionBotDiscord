@@ -1,47 +1,39 @@
 package me.name.bot;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
-import net.dv8tion.jda.core.entities.Role;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EnrolmentHelper {
 
-    public static int checkInput(String arg, Unit foundUnit, String[] enrols, CommandEvent event) {
-        int inputDecision = 0;
-
-        if (foundUnit != null) { //if the argument matched any JSON unit
-            Role role = event.getGuild().getRolesByName(foundUnit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
-
-            if (anyEquals(foundUnit.getUnitCode(), enrols)) {
-                //calls below method that checks every array index with the unitcode
-                inputDecision = 200; //i.e. the unitcode was found enrolled in this session/event
-            }
-            else if (event.getMember().getRoles().stream().anyMatch(x -> x.getName().equals(role.getName()))) {
-                //if the argument was already found enrolled into previous to this session
-                inputDecision = 100;
-            }
-            else { //otherwise the unit is not a duplicate
-                inputDecision = 300;
-            }
+    public static int checkUnitInput(Unit foundUnit, String[] enrols, CommandEvent event) {
+        int inputDecision;
+        if (anyEquals(foundUnit.getUnitCode(), enrols)) {
+            //calls below method that checks every array index with the unitcode
+            inputDecision = 200; //i.e. the unitcode was found enrolled in this session/event
+        } else if (event.getMember().getRoles().stream().anyMatch(x -> x.getName().equals(foundUnit.getUnitCode()))) {
+            //if the argument was already found enrolled into previous to this session
+            inputDecision = 100;
+        } else { //otherwise the unit is not a duplicate
+            inputDecision = 300;
         }
-        else {
-            String msg;
-            if (arg == null || arg.isEmpty()) {
-                //if the argument is null, empty
-                msg = "Unit code/name needs to start with a letter: ";
-            }
-            else if (!Character.isLetter(arg.charAt(0))) { //does not start with a character i.e. "123" or "@@@"
-                msg = "Unit code/name needs to start with a letter: " + arg;
-            }
-            else { //otherwise the unit just does not exist and is in the format "asdfsd" or "sksk1111", etc
-                msg = "Unit does not exist, double check the unit code/name: " + arg;
-            }
-            event.replyInDm(msg);
-            IO.write(msg);
-        }
+        return (inputDecision);
+    }
 
-        return(inputDecision);
+    public static void giveErrorMessage(String arg, CommandEvent event) {
+        String msg;
+        if (arg == null || arg.isEmpty()) {
+            //if the argument is null, empty
+            msg = "Unit code/name needs to start with a letter: ";
+        }
+        else if (!Character.isLetter(arg.charAt(0))) { //does not start with a character i.e. "123" or "@@@"
+            msg = "Unit code/name needs to start with a letter: " + arg;
+        }
+        else { //otherwise the unit just does not exist and is in the format "asdfsd" or "sksk1111", etc
+            msg = "Unit does not exist, double check the unit code/name: " + arg;
+        }
+        event.replyInDm(msg);
+        IO.write(msg);
     }
 
     public static boolean anyEquals(String arg, String[] acceptable) {
