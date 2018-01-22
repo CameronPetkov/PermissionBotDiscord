@@ -43,7 +43,6 @@ public class Unenrolment extends Command {
 
         boolean changes = false;
         if (args[0].toLowerCase().equals("all")) { //if argument is "all" i.e. !unenrol all
-            event.replyInDm("**Unenrolling from all current units.**");
             for (int ii = 0; ii < event.getMember().getRoles().size(); ii++) {  //go through all roles of the member
                 String role = event.getMember().getRoles().get(ii).getName();
                 if (Arrays.stream(units).filter(x->x.getUnitCode().equalsIgnoreCase(role)).findFirst().orElse(null) != null)  {
