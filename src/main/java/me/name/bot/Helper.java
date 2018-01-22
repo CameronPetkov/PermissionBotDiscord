@@ -58,5 +58,6 @@ public class Helper extends Command {
         event.replyInDm("\n \n Have a question or issue that was not answered here? Perhaps I don't have your unitcode/name/abbreviation entered in my database? \n" +
                 "Ping me on discord using \"**@Admin <message>**\", PM me here, or contact me on Facebook @ https://www.facebook.com/cameron.petkov1 \n" +
                 "Hope this helped! Now go study hard or die doing allnighters trying!");
+        io.write("");
     }
 }
