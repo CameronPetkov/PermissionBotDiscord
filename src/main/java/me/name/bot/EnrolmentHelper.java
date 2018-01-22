@@ -2,10 +2,12 @@ package me.name.bot;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import net.dv8tion.jda.core.entities.Role;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EnrolmentHelper {
 
-    public int checkInput(String arg, Unit foundunit, String[] enrols, CommandEvent event) {
+    public static int checkInput(String arg, Unit foundunit, String[] enrols, CommandEvent event) {
         int inputDecision = 0;
 
         if (foundunit != null) { //if the argument matched any JSON unit
@@ -43,7 +45,7 @@ public class EnrolmentHelper {
         return(inputDecision);
     }
 
-    public boolean anyEquals(String arg, String[] acceptable) {
+    public static boolean anyEquals(String arg, String[] acceptable) {
         boolean equal = false; //assume its not equal
         for(int ii=0; ii<acceptable.length; ii++) {  //iterate through the enrolled array
             if(arg.equals(acceptable[ii])) {
@@ -52,5 +54,34 @@ public class EnrolmentHelper {
             }
         }
         return(equal);
+    }
+
+    public static void logUserMessage(CommandEvent event) {
+        LocalDateTime timeStamp = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String time = timeStamp.format(formatter);
+
+        String author = event.getMember().getEffectiveName();
+        String message = event.getMessage().getContentDisplay();
+        String userMsg = time + " - " + author + ": " + message;
+
+        IO.write(userMsg);
+        event.replyInDm("-----------------------------------------------");
+        event.replyInDm("**" + userMsg + "**");
+
+        event.getMessage().delete().queue();               //Delete user message
+    }
+
+    public static void displayChangeStatus(boolean change, CommandEvent event) {
+        String result;
+        if(change) { //i.e. a unit has been unenrolled from
+            result = "**Success!**";
+        }
+        else {
+            result = "**Failure!** No changes were made to enrolment.";
+        }
+        event.replyInDm(result);
+        IO.write(result);
+        IO.write("");
     }
 }

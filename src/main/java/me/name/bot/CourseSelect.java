@@ -3,9 +3,6 @@ package me.name.bot;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class CourseSelect extends Command {
     public CourseSelect() {
         this.name = "course";
@@ -18,20 +15,7 @@ public class CourseSelect extends Command {
     protected void execute(CommandEvent event) {
         String[] args = event.getArgs().split("\\s+"); //split by space
 
-        LocalDateTime timeStamp = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String time = timeStamp.format(formatter);
-
-        String author = event.getMember().getEffectiveName();
-        String message = event.getMessage().getContentDisplay();
-        String userMsg = time + " - " + author + ": " + message;
-
-        IO io = new IO();
-        io.write(userMsg);
-        event.replyInDm("-----------------------------------------------");
-        event.replyInDm("**" + userMsg + "**");
-
-        event.getMessage().delete().queue(); //Delete user message
+        EnrolmentHelper.logUserMessage(event);
 
         for(int ii=0; ii<args.length; ii++) {
             args[ii] = args[ii].toLowerCase(); //formatting
@@ -46,6 +30,8 @@ public class CourseSelect extends Command {
             }
             catch (IndexOutOfBoundsException e) {
                 msg = "Input correct parameter (ee/cs/eecs).";
+                event.replyInDm(msg);
+                IO.write(msg);
             }
             switch(choose) {
                 case 1: //CS
@@ -104,18 +90,9 @@ public class CourseSelect extends Command {
         }
 
         event.replyInDm(msg);
-        io.write(msg);
+        IO.write(msg);
 
-        String result;
-        if (changes) { //i.e. a unit has been unenrolled from
-            result = "**Success!**";
-        }
-        else {
-            result = "**Failure!** No changes were made to enrolment.";
-        }
-        event.replyInDm(result);
-        io.write(result);
-        io.write("");
+        EnrolmentHelper.displayChangeStatus(changes, event);
     }
 
     private int majorChoice(String choice) {

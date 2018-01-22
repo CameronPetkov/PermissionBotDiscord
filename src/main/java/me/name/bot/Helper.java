@@ -3,9 +3,6 @@ package me.name.bot;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class Helper extends Command {
 
     public Helper() {
@@ -16,20 +13,9 @@ public class Helper extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        LocalDateTime timeStamp = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String time = timeStamp.format(formatter);
+        EnrolmentHelper helper = new EnrolmentHelper();        //helper class for enrolment/unenrolment class
+        helper.logUserMessage(event);
 
-        String author = event.getMember().getEffectiveName();
-        String message = event.getMessage().getContentDisplay();
-        String userMsg = time + " - " + author + ": " + message;
-
-        IO io = new IO();
-        io.write(userMsg);
-        event.replyInDm("-----------------------------------------------");
-        event.replyInDm("**" + userMsg + "**");
-
-        event.getMessage().delete().queue(); //Delete user message
         event.replyInDm("Hi there! This bot is designed to quickly and automatically \"enrol\" you into the server, giving you the permissions needed to view text and voice channels for the relevant units. \n");
 
         event.replyInDm("__First__, let's make sure other students know your major! \n" +
@@ -58,6 +44,6 @@ public class Helper extends Command {
         event.replyInDm("\n \n Have a question or issue that was not answered here? Perhaps I don't have your unitcode/name/abbreviation entered in my database? \n" +
                 "Ping me on discord using \"**@Admin <message>**\", PM me here, or contact me on Facebook @ https://www.facebook.com/cameron.petkov1 \n" +
                 "Hope this helped! Now go study hard or die doing allnighters trying!");
-        io.write("");
+        IO.write("");
     }
 }
