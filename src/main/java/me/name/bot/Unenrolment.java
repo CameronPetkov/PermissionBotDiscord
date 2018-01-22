@@ -26,8 +26,14 @@ public class Unenrolment extends Command {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String time = timeStamp.format(formatter);
 
+        String author = event.getMember().getEffectiveName();
+        String message = event.getMessage().getContentDisplay();
+        String userMsg = time + " - " + author + ": " + message;
+
         IO io = new IO();
-        io.write(time, event);
+        io.write(userMsg);
+        event.replyInDm("-----------------------------------------------");
+        event.replyInDm("**" + userMsg + "**");
 
         event.getMessage().delete().queue();                 //Delete user message
 
@@ -48,8 +54,6 @@ public class Unenrolment extends Command {
             }
         }
         else {
-            event.replyInDm("**Unenrolling from units: **");
-
                 for (int ii = 0; ii < args.length; ii++) {      //for all arguments
                     unenrols[ii] = "empty"; //initialise array to later be filled with successful enrolment
 
@@ -89,10 +93,10 @@ public class Unenrolment extends Command {
 
         String result;
         if(changes) { //i.e. a unit has been unenrolled from
-            result = "**Success!** Timestamp: " + time;
+            result = "**Success!**";
         }
         else {
-            result = "**Failure!** No changes were made to enrolment. Timestamp: " + time;
+            result = "**Failure!** No changes were made to enrolment.";
         }
         event.replyInDm(result);
         io.write(result);

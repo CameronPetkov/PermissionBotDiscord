@@ -20,9 +20,14 @@ public class Helper extends Command {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String time = timeStamp.format(formatter);
 
+        String author = event.getMember().getEffectiveName();
+        String message = event.getMessage().getContentDisplay();
+        String userMsg = time + " - " + author + ": " + message;
+
         IO io = new IO();
-        io.write(time, event);
-        io.write("");
+        io.write(userMsg);
+        event.replyInDm("-----------------------------------------------");
+        event.replyInDm("**" + userMsg + "**");
 
         event.getMessage().delete().queue(); //Delete user message
         event.replyInDm("Hi there! This bot is designed to quickly and automatically \"enrol\" you into the server, giving you the permissions needed to view text and voice channels for the relevant units. \n");

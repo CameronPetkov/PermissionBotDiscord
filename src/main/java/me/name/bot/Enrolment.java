@@ -27,8 +27,14 @@ public class Enrolment extends Command {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String time = timeStamp.format(formatter);
 
+        String author = event.getMember().getEffectiveName();
+        String message = event.getMessage().getContentDisplay();
+        String userMsg = time + " - " + author + ": " + message;
+
         IO io = new IO();
-        io.write(time, event);
+        io.write(userMsg);
+        event.replyInDm("-----------------------------------------------");
+        event.replyInDm("**" + userMsg + "**");
 
         event.getMessage().delete().queue();               //Delete user message
         Unit foundunit;
@@ -50,8 +56,6 @@ public class Enrolment extends Command {
             }
         }
         else {*/
-        event.replyInDm("**Enrolling into units: **");
-
         Role ee = event.getGuild().getRolesByName("Electrical Plebs", true).get(0);
         Role cs = event.getGuild().getRolesByName("Comp Sci Noobs", true).get(0);
 
@@ -103,10 +107,10 @@ public class Enrolment extends Command {
 
         String result;
         if (changes) { //i.e. a unit has been unenrolled from
-            result = "**Success!** Timestamp: " + time;
+            result = "**Success!**";
         }
         else {
-            result = "**Failure!** No changes were made to enrolment. Timestamp: " + time;
+            result = "**Failure!** No changes were made to enrolment.";
         }
         event.replyInDm(result);
         io.write(result);
