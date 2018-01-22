@@ -73,6 +73,7 @@ public class Enrolment extends Command {
 
                             Role role = event.getGuild().getRolesByName(foundUnit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
                             event.getGuild().getController().addSingleRoleToMember(event.getMember(), role).queue(); //add that role to the user
+
                             msg = "Added unit: " + WordUtils.capitalize(foundUnit.getFullName());
                             event.replyInDm(msg);
                             IO.write(msg);
