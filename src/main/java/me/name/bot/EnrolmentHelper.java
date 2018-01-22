@@ -25,7 +25,7 @@ public class EnrolmentHelper {
         }
         else {
             String msg;
-            if (arg.equals(null) || arg.isEmpty()) {
+            if (arg == null || arg.isEmpty()) {
                 //if the argument is null, empty
                 msg = "Unit code/name needs to start with a letter: ";
             }
