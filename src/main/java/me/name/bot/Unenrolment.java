@@ -22,7 +22,7 @@ public class Unenrolment extends Command {
         EnrolmentHelper.logUserMessage(event);
 
         Unit foundUnit;
-        Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);               //load JSON
+        Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);    //load JSON
 
         boolean changes = false;
         if (args[0].toLowerCase().equals("all")) { //if argument is "all" i.e. !unenrol all
@@ -52,6 +52,7 @@ public class Unenrolment extends Command {
 
                         Role role = event.getGuild().getRolesByName(foundUnit.getUnitCode(), true).get(0); //get the role object that matches to the unitcode
                         event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), role).queue(); //remove that role from the user
+
                         msg = "Removed unit: " + WordUtils.capitalize(foundUnit.getFullName());
                         event.replyInDm(msg);
                         IO.write(msg);

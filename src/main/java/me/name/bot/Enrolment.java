@@ -23,7 +23,7 @@ public class Enrolment extends Command {
         EnrolmentHelper.logUserMessage(event);
 
         Unit foundUnit;
-        Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);                 //load JSON
+        Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);   //load JSON
 
         boolean changes = false;
         /* Uncomment for testing enrolment into ALL units (using format !enrol all)
@@ -51,7 +51,7 @@ public class Enrolment extends Command {
             for (int ii = 0; ii < args.length; ii++) {          //for all arguments
                 enrols[ii] = "empty"; //initialise array to later be filled with successful enrolment
 
-                final String arg = args[ii].trim().toLowerCase(); //formatting
+                String arg = args[ii].trim().toLowerCase(); //formatting
                 foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(arg))
                         || x.getFullName().equalsIgnoreCase(arg) || x.getUnitCode().equalsIgnoreCase(arg)).findFirst().orElse(null);
                 //if the argument matches to any JSON unit (by unitcode, name, or abbreviation)
