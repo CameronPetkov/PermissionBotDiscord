@@ -92,7 +92,6 @@ public class Enrolment extends Command {
             event.replyInDm(msg);
             IO.write(msg);
         }
-
         EnrolmentHelper.displayChangeStatus(changes, event);
     }
 }

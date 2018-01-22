@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EnrolmentHelper {
-
     public static int checkUnitInput(Unit foundUnit, String[] enrols, CommandEvent event) {
         int inputDecision;
         if (anyEquals(foundUnit.getUnitCode(), enrols)) {
