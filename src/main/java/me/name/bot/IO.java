@@ -1,10 +1,9 @@
 package me.name.bot;
 
-import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import java.io.*;
 
 public class IO {
-    public void write(String msg) {
+    public static void write(String msg) {
         FileOutputStream fileStrm = null;
         PrintWriter pw;
 
