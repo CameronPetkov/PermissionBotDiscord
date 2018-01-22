@@ -1,9 +1,7 @@
 package me.name.bot.Common;
 
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
-import me.name.bot.Common.IO;
 import me.name.bot.Models.Unit;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
