@@ -1,4 +1,4 @@
-package me.name.bot;
+package me.name.bot.Models;
 
 public class Unit //JSON format
 {

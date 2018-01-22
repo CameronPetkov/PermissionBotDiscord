@@ -1,7 +1,9 @@
-package me.name.bot;
+package me.name.bot.Commands;
 
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import me.name.bot.Common.EnrolmentHelper;
+import me.name.bot.Common.IO;
 
 public class CourseSelect extends Command {
     public CourseSelect() {

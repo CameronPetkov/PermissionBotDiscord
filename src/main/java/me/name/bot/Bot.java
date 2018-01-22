@@ -2,6 +2,12 @@ package me.name.bot;
 
         import com.jagrosh.jdautilities.commandclient.CommandClient;
         import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
+        import me.name.bot.Commands.CourseSelect;
+        import me.name.bot.Commands.Enrolment;
+        import me.name.bot.Commands.Unenrolment;
+        import me.name.bot.Commands.Helper;
+        import me.name.bot.Common.JSONLoad;
+        import me.name.bot.Models.Configuration;
         import net.dv8tion.jda.core.AccountType;
         import net.dv8tion.jda.core.JDABuilder;
         import net.dv8tion.jda.core.entities.Game;

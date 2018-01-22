@@ -1,7 +1,11 @@
-package me.name.bot;
+package me.name.bot.Commands;
 
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
+import me.name.bot.Common.EnrolmentHelper;
+import me.name.bot.Common.IO;
+import me.name.bot.Common.JSONLoad;
+import me.name.bot.Models.Unit;
 import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.lang3.text.WordUtils;
 import java.util.Arrays;

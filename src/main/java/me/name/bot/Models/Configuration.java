@@ -1,4 +1,4 @@
-package me.name.bot;
+package me.name.bot.Models;
 
 public class Configuration {
     String Token = null;

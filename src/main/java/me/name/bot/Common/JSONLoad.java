@@ -1,4 +1,4 @@
-package me.name.bot;
+package me.name.bot.Common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
