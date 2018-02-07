@@ -20,12 +20,12 @@ public class Bot {
 
         builder.setOwnerId(config.getOwnerID()); //my userid
         builder.setPrefix("!");  //!help, !command
-        builder.setGame(Game.of(config.getGame()));
         builder.addCommands(new Enrolment(), new Unenrolment(), new CourseSelect(), new Helper()); //4 commands
 
         CommandClient client = builder.build();
 
         JDABuilder api = new JDABuilder(AccountType.BOT);
+        api.setGame(Game.streaming("Videos of blonde chicks", "www.blondegirls.com"));
         api.setToken(config.getToken()); //token-id, not to be released
         api.addEventListener(client);
         api.buildAsync();

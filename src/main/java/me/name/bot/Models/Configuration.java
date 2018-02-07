@@ -3,7 +3,6 @@ package me.name.bot.Models;
 public class Configuration {
     String Token = null;
     String OwnerID = null;
-    String Game = null;
 
     public String getToken() {
         return Token;
@@ -19,13 +18,5 @@ public class Configuration {
 
     public void setOwnerID(String ownerID) {
         OwnerID = ownerID;
-    }
-
-    public String getGame() {
-        return Game;
-    }
-
-    public void setGame(String game) {
-        Game = game;
     }
 }
