@@ -1,6 +1,7 @@
 package me.name.bot.Models;
 
 public class Configuration {
+
     String Token = null;
     String OwnerID = null;
     String Game = null;

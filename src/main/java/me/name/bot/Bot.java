@@ -22,11 +22,11 @@ public class Bot {
         builder.setPrefix("!");
         builder.addCommands(new Enrolment(), new Unenrolment(), new CourseSelect(), new Helper());
         builder.setGame(null);
+        CommandClient client = builder.build();
 
         JDABuilder api = new JDABuilder(AccountType.BOT);
         api.setToken(config.getToken()); //token-id, not to be released
         api.setGame(Game.watching(config.getGame()));
-        CommandClient client = builder.build();
 
         api.addEventListener(client);
         api.buildAsync();
