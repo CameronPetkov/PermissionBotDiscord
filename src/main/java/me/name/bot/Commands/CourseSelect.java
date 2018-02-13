@@ -9,7 +9,7 @@ public class CourseSelect extends Command {
     public CourseSelect() {
         this.name = "course";
         this.arguments = "<item>";
-        this.aliases = new String[]{"courses", ""};
+        this.aliases = new String[]{"courses"};
         this.help = "This command provides course selection permissions";
     }
 

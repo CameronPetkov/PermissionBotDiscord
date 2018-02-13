@@ -5,6 +5,8 @@ public class Configuration {
     String Token = null;
     String OwnerID = null;
     String Game = null;
+    String StudentID = null;
+    String StudentPassword = null;
 
     public String getToken() {
         return Token;
@@ -28,5 +30,21 @@ public class Configuration {
 
     public void setGame(String game) {
         Game = game;
+    }
+
+    public String getStudentID() {
+        return StudentID;
+    }
+
+    public void setStudentID(String studentID) {
+        StudentID = studentID;
+    }
+
+    public String getStudentPassword() {
+        return StudentPassword;
+    }
+
+    public void setStudentPassword(String studentPassword) {
+        StudentPassword = studentPassword;
     }
 }

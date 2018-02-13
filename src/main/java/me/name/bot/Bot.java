@@ -2,10 +2,7 @@ package me.name.bot;
 
 import com.jagrosh.jdautilities.commandclient.CommandClient;
 import com.jagrosh.jdautilities.commandclient.CommandClientBuilder;
-import me.name.bot.Commands.CourseSelect;
-import me.name.bot.Commands.Enrolment;
-import me.name.bot.Commands.Unenrolment;
-import me.name.bot.Commands.Helper;
+import me.name.bot.Commands.*;
 import me.name.bot.Common.JSONLoad;
 import me.name.bot.Models.Configuration;
 import net.dv8tion.jda.core.AccountType;
@@ -20,7 +17,7 @@ public class Bot {
 
         builder.setOwnerId(config.getOwnerID()); //user-id
         builder.setPrefix("!");
-        builder.addCommands(new Enrolment(), new Unenrolment(), new CourseSelect(), new Helper());
+        builder.addCommands(new Enrolment(), new Unenrolment(), new CourseSelect(), new Helper(), new UnitOutline());
         builder.setGame(null);
         CommandClient client = builder.build();
 
