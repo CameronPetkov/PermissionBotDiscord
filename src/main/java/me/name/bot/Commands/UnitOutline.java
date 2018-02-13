@@ -44,12 +44,13 @@ public class UnitOutline extends Command {
 
         String arg = args[0].trim().toLowerCase();
 
+        boolean change = false;
         if(arg == null || arg.isEmpty()) {
             String name = event.getChannel().getName();
             foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(name))).findFirst().orElse(null);
             if(foundUnit != null) {
                 String unitcode = foundUnit.getUnitCode();
-                checkUnit(unitcode, event, foundUnit);
+                change = checkUnit(unitcode, event, foundUnit);
             }
             else {
                 event.replyInDm("Unit code/name needs to start with a letter.");
@@ -60,14 +61,15 @@ public class UnitOutline extends Command {
                     || x.getFullName().equalsIgnoreCase(arg) || x.getUnitCode().equalsIgnoreCase(arg)).findFirst().orElse(null);
             if (foundUnit != null) {
                 String unitcode = foundUnit.getUnitCode();
-                checkUnit(unitcode, event, foundUnit);
+                change = checkUnit(unitcode, event, foundUnit);
             } else {
                 EnrolmentHelper.giveErrorMessage(arg, event);
             }
         }
+        EnrolmentHelper.displayLookupStatus(change, event);
     }
 
-    private void checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
+    private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
         System.setProperty("webdriver.gecko.driver", "E:\\Libraries\\Downloads\\geckodriver.exe");
         Configuration config = JSONLoad.LoadJSON("data/config.json", Configuration.class);
 
@@ -133,5 +135,6 @@ public class UnitOutline extends Command {
 
         Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
         event.getChannel().sendFile(new File(saveDir + "\\" + unitcode.toUpperCase()+".pdf"), message).queue();
+        return true;
     }
 }

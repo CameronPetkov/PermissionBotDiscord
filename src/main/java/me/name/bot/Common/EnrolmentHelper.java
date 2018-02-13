@@ -87,4 +87,17 @@ public class EnrolmentHelper {
         IO.write(result);
         IO.write("");
     }
+
+    public static void displayLookupStatus(boolean change, CommandEvent event) {
+        String result;
+        if(change) { //i.e. a unit has been unenrolled from
+            result = "**Success!**";
+        }
+        else {
+            result = "**Failure!** Lookup unsuccessful.";
+        }
+        event.replyInDm(result);
+        IO.write(result);
+        IO.write("");
+    }
 }
