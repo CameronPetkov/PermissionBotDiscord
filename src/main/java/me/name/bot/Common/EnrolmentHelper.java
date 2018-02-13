@@ -36,7 +36,7 @@ public class EnrolmentHelper {
         String msg;
         if (arg == null || arg.isEmpty()) {
             //if the argument is null, empty
-            msg = "Unit code/name needs to start with a letter: ";
+            msg = "Unit code/name needs to start with a letter.";
         }
         else if (!Character.isLetter(arg.charAt(0))) { //does not start with a character i.e. "123" or "@@@"
             msg = "Unit code/name needs to start with a letter: " + arg;
