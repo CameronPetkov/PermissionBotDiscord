@@ -23,6 +23,17 @@ public class EnrolmentHelper {
         return (inputDecision);
     }
 
+    public static void unenrolAll(CommandEvent event) {
+        Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);    //load JSON
+        for (int ii = 0; ii < event.getMember().getRoles().size(); ii++) {  //go through all roles of the member
+            String role = event.getMember().getRoles().get(ii).getName();
+            if (Arrays.stream(units).filter(x->x.getUnitCode().equalsIgnoreCase(role)).findFirst().orElse(null) != null)  {
+                //if the member's role  matches the unitcode of any JSON unitcode, then remove that role to the member
+                event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getMember().getRoles().get(ii)).queue();
+            }
+        }
+    }
+
     public static void giveErrorMessage(String arg, CommandEvent event) {
         String msg;
         if (arg == null || arg.isEmpty()) {
@@ -48,17 +59,6 @@ public class EnrolmentHelper {
             }
         }
         return(equal);
-    }
-
-    public static void unenrolAll(CommandEvent event) {
-        Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);    //load JSON
-        for (int ii = 0; ii < event.getMember().getRoles().size(); ii++) {  //go through all roles of the member
-            String role = event.getMember().getRoles().get(ii).getName();
-            if (Arrays.stream(units).filter(x->x.getUnitCode().equalsIgnoreCase(role)).findFirst().orElse(null) != null)  {
-                //if the member's role  matches the unitcode of any JSON unitcode, then remove that role to the member
-                event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getMember().getRoles().get(ii)).queue();
-            }
-        }
     }
 
     public static void logUserMessage(CommandEvent event) {
