@@ -24,7 +24,7 @@ public class CourseSelect extends Command {
         }
 
         String msg;
-        boolean changes = false;
+        boolean changes = true;
         if(args[0].equals("add") || args[0].equals("enrol") || args[0].equals("enroll") || args[0].equals("enrols") || args[0].equals("enrolls")) {
             int choose = 0;
             try {
@@ -34,27 +34,26 @@ public class CourseSelect extends Command {
                 msg = "Input correct parameter (ee/cs/eecs).";
                 event.replyInDm(msg);
                 IO.write(msg);
+                changes = false;
             }
             switch(choose) {
                 case 1: //CS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0)).queue();   //add CS
                     msg = "Course is now CS.";
-                    changes = true;
                     break;
                 case 2: //EE
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0)).queue();  //remove CS
                     event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //add EE
                     msg = "Course is now EE.";
-                    changes = true;
                     break;
                 case 3: //EECS
                     event.getGuild().getController().addRolesToMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //add EE and CS
                     msg = "Course is now EECS.";
-                    changes = true;
                     break;
                 default:
                     msg = "Input correct parameter (ee/cs/eecs).";
+                    changes = false;
                     break;
             }
         }
@@ -65,31 +64,31 @@ public class CourseSelect extends Command {
             }
             catch (IndexOutOfBoundsException e) {
                 msg = "Input correct parameter (ee/cs/eecs).";
+                changes = false;
             }
             switch(choose) {
                 case 1: //CS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0)).queue(); //remove CS
                     msg = "Removed CS from course.";
-                    changes = true;
                     break;
                 case 2: //EE
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE
                     msg = "Removed EE from course.";
-                    changes = true;
                     break;
                 case 3: //EECS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE and CS
                     msg = "Removed EECS from course.";
                     EnrolmentHelper.unenrolAll(event);
-                    changes = true;
                     break;
                 default:
                     msg = "Input correct parameter (ee/cs/eecs).";
+                    changes = false;
                     break;
             }
         }
         else {
             msg = "Command usage: !course <add>/<remove>.";
+            changes = false;
         }
 
         event.replyInDm(msg);
