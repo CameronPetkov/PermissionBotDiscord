@@ -1,6 +1,10 @@
 package me.name.bot.Common;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class IO {
     public static void write(String msg) {
@@ -8,7 +12,11 @@ public class IO {
         PrintWriter pw;
 
         try {
-            fileStrm = new FileOutputStream("DiscordBotCommandUsage.txt", true);
+            Files.createDirectory(Paths.get("output"));
+        } catch (IOException e) {  }
+
+        try {
+            fileStrm = new FileOutputStream("output/DiscordBotCommandUsage.txt", true);
             pw = new PrintWriter(fileStrm);
 
             pw.println(msg);
