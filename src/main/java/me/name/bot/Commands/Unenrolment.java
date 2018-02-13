@@ -30,14 +30,8 @@ public class Unenrolment extends Command {
 
         boolean changes = false;
         if (args[0].toLowerCase().equals("all")) { //if argument is "all" i.e. !unenrol all
-            for (int ii = 0; ii < event.getMember().getRoles().size(); ii++) {  //go through all roles of the member
-                String role = event.getMember().getRoles().get(ii).getName();
-                if (Arrays.stream(units).filter(x->x.getUnitCode().equalsIgnoreCase(role)).findFirst().orElse(null) != null)  {
-                    //if the member's role  matches the unitcode of any JSON unitcode, then remove that role to the member
-                    event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getMember().getRoles().get(ii)).queue();
-                    changes = true; //Used to let user know if a unit was unenrolled from
-                }
-            }
+            EnrolmentHelper.unenrolAll(event);
+            changes = true; //Used to let user know if a unit was unenrolled from
         }
         else {
             for (int ii = 0; ii < args.length; ii++) {      //for all arguments

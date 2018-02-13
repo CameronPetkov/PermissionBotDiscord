@@ -80,6 +80,7 @@ public class CourseSelect extends Command {
                 case 3: //EECS
                     event.getGuild().getController().removeRolesFromMember(event.getMember(), event.getGuild().getRolesByName("comp sci noobs", true).get(0), event.getGuild().getRolesByName("electrical plebs", true).get(0)).queue(); //remove EE and CS
                     msg = "Removed EECS from course.";
+                    EnrolmentHelper.unenrolAll(event);
                     changes = true;
                     break;
                 default:
