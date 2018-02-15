@@ -97,7 +97,7 @@ public class UnitOutline extends Command {
     }
 
     private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
-        boolean successful = false;
+        boolean successful;
         if(isFileArchived(unitcode)) {
             Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
             event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
@@ -105,56 +105,7 @@ public class UnitOutline extends Command {
         }
         else {
             FirefoxDriver driver = loginCurtin();
-
-            WebElement unit = driver.findElement(By.xpath("//input[@name='unitCode']"));
-            unit.sendKeys(unitcode);
-            WebElement button2 = driver.findElement(By.xpath("//input[@name='next']"));
-            button2.click();
-
-            int currYear = Year.now().getValue();
-            WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
-            wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("thead")));
-
-            int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
-            // int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
-
-            int maxYear = 0;
-            boolean exactMatch = false;
-            WebElement linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[2]/td[5]"));
-            for (int ii = 1; ii <= rowCount; ii++) {
-                if (driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals("Bentley Campus")) {
-                    WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
-                    int year = Integer.parseInt(yearElement.getText());
-                    if (exactMatch) { }
-                    else if (year - currYear == 0) {
-                        exactMatch = true;
-                        linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]"));
-                    }
-                    else {
-                        if (year > maxYear) {
-                            maxYear = year;
-                            linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
-                        }
-                    }
-                }
-            }
-
-            String link = linkElement.getAttribute("href");
-            driver.close();
-
-            try {
-                Files.createDirectory(Paths.get(SAVE_DIRECTORY));
-            }
-            catch (IOException e) { }
-
-            try {
-                URL url = new URL(link);
-                InputStream in = url.openStream();
-                Files.copy(in, Paths.get(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), StandardCopyOption.REPLACE_EXISTING);
-                in.close();
-            }
-            catch (MalformedURLException e) { }
-            catch (IOException e) { }
+            downloadUnitOutline(unitcode, driver);
 
             Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
             event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
