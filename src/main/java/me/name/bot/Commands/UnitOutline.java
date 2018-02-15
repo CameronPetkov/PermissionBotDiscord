@@ -3,11 +3,13 @@ package me.name.bot.Commands;
 import com.jagrosh.jdautilities.commandclient.Command;
 import com.jagrosh.jdautilities.commandclient.CommandEvent;
 import me.name.bot.Common.EnrolmentHelper;
+import me.name.bot.Common.IO;
 import me.name.bot.Common.JSONLoad;
 import me.name.bot.Models.Configuration;
 import me.name.bot.Models.Unit;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.Role;
 import org.apache.commons.lang3.text.WordUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -43,12 +45,28 @@ public class UnitOutline extends Command {
         String[] args = event.getArgs().split("\\s+"); //split by space
         EnrolmentHelper.logUserMessage(event);
 
+        boolean change;
+
+        Role ee = event.getGuild().getRolesByName("Electrical Plebs", true).get(0);
+        Role cs = event.getGuild().getRolesByName("Comp Sci Noobs", true).get(0);
+        if (event.getMember().getRoles().stream().anyMatch(x -> x.getName().equals(ee.getName()) || x.getName().equals(cs.getName()))) {
+            change = parseInput(event, args);
+            EnrolmentHelper.displayLookupStatus(change, event);
+        }
+        else {
+            String msg = "Enrol into your major first (ee, cs or both). Use **!course add <major>**, where major is cs, ee or eecs.";
+            event.replyInDm(msg);
+            IO.write(msg);
+            EnrolmentHelper.displayStatus("**Failure!**", event);
+        }
+    }
+
+    private boolean parseInput(CommandEvent event, String[] args) {
         Unit foundUnit;
         Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);   //load JSON
 
-        String arg = args[0].trim().toLowerCase();
-
         boolean change = false;
+        String arg = args[0].trim().toLowerCase();
         if(arg == null || arg.isEmpty()) {
             String name = event.getChannel().getName();
             foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(name))).findFirst().orElse(null);
@@ -93,7 +111,7 @@ public class UnitOutline extends Command {
                 EnrolmentHelper.giveErrorMessage(arg, event);
             }
         }
-        EnrolmentHelper.displayLookupStatus(change, event);
+        return change;
     }
 
     private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
@@ -112,6 +130,17 @@ public class UnitOutline extends Command {
             successful = true;
         }
         return(successful);
+    }
+
+    private boolean isFileArchived(String unitcode) {
+        boolean fileArchive = false;
+        File file = new File(SAVE_DIRECTORY + unitcode.toUpperCase() + ".pdf");
+        long fileDate = file.lastModified();
+        long currDate = Instant.now().toEpochMilli();
+        if(currDate - fileDate < RETAIN_TIME) {
+            fileArchive = true;
+        }
+        return fileArchive;
     }
 
     private boolean updateFileArchive(String unitcode, CommandEvent event, Unit foundUnit) {
@@ -188,16 +217,5 @@ public class UnitOutline extends Command {
         }
         catch (MalformedURLException e) { }
         catch (IOException e) { }
-    }
-
-    private boolean isFileArchived(String unitcode) {
-        boolean fileArchive = false;
-        File file = new File(SAVE_DIRECTORY + unitcode.toUpperCase() + ".pdf");
-        long fileDate = file.lastModified();
-        long currDate = Instant.now().toEpochMilli();
-        if(currDate - fileDate < RETAIN_TIME) {
-            fileArchive = true;
-        }
-        return fileArchive;
     }
 }
