@@ -23,10 +23,14 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.time.Year;
 import java.util.Arrays;
 
 public class UnitOutline extends Command {
+    private final String SAVE_DIRECTORY = "output/unitOutlines/";
+    private final long RETAIN_TIME = 2592000000L; //30 days in ms
+
     public UnitOutline() {
         this.name = "unitoutline";
         this.arguments = "<item>";
@@ -37,8 +41,8 @@ public class UnitOutline extends Command {
     @Override
     protected void execute(CommandEvent event) {
         String[] args = event.getArgs().split("\\s+"); //split by space
-
         EnrolmentHelper.logUserMessage(event);
+
         Unit foundUnit;
         Unit[] units = JSONLoad.LoadJSON("data/units.json", Unit[].class);   //load JSON
 
@@ -56,13 +60,36 @@ public class UnitOutline extends Command {
                 event.replyInDm("Unit code/name needs to start with a letter.");
             }
         }
+        else if(arg.equals("update")) {
+            try {
+                String arg2 = args[1].trim().toLowerCase();
+                foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(arg2))
+                        || x.getFullName().equalsIgnoreCase(arg2) || x.getUnitCode().equalsIgnoreCase(arg2)).findFirst().orElse(null);
+                if (foundUnit != null) {
+                    String unitcode = foundUnit.getUnitCode();
+                    change = updateFileArchive(unitcode, event, foundUnit);
+                } else {
+                    EnrolmentHelper.giveErrorMessage(arg, event);
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                String name = event.getChannel().getName();
+                foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(name))).findFirst().orElse(null);
+                if (foundUnit != null) {
+                    String unitcode = foundUnit.getUnitCode();
+                    change = updateFileArchive(unitcode, event, foundUnit);
+                } else {
+                    event.replyInDm("Unit code/name needs to start with a letter.");
+                }
+            }
+        }
         else {
             foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(arg))
                     || x.getFullName().equalsIgnoreCase(arg) || x.getUnitCode().equalsIgnoreCase(arg)).findFirst().orElse(null);
             if (foundUnit != null) {
                 String unitcode = foundUnit.getUnitCode();
                 change = checkUnit(unitcode, event, foundUnit);
-            } else {
+            }
+            else {
                 EnrolmentHelper.giveErrorMessage(arg, event);
             }
         }
@@ -70,62 +97,75 @@ public class UnitOutline extends Command {
     }
 
     private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
-        FirefoxDriver driver = loginCurtin();
+        boolean successful = false;
+        if(isFileArchived(unitcode)) {
+            Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
+            event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
+            successful = true;
+        }
+        else {
+            FirefoxDriver driver = loginCurtin();
 
-        WebElement unit = driver.findElement(By.xpath("//input[@name='unitCode']"));
-        unit.sendKeys(unitcode);
-        WebElement button2 = driver.findElement(By.xpath("//input[@name='next']"));
-        button2.click();
+            WebElement unit = driver.findElement(By.xpath("//input[@name='unitCode']"));
+            unit.sendKeys(unitcode);
+            WebElement button2 = driver.findElement(By.xpath("//input[@name='next']"));
+            button2.click();
 
-        int currYear = Year.now().getValue();
-        WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
-        wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("thead")));
+            int currYear = Year.now().getValue();
+            WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
+            wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("thead")));
 
-        int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
-        // int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
+            int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
+            // int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
 
-        int maxYear = 0;
-        boolean exactMatch = false;
-        WebElement linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[2]/td[5]"));
-        for(int ii=1; ii<=rowCount; ii++) {
-            if(driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals("Bentley Campus")) {
-                WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
-                int year = Integer.parseInt(yearElement.getText());
-                if(exactMatch) { }
-                else if(year-currYear == 0) {
-                    exactMatch = true;
-                    linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]"));
-                }
-                else {
-                    if(year>maxYear) {
-                        maxYear = year;
-                        linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
+            int maxYear = 0;
+            boolean exactMatch = false;
+            WebElement linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[2]/td[5]"));
+            for (int ii = 1; ii <= rowCount; ii++) {
+                if (driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals("Bentley Campus")) {
+                    WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
+                    int year = Integer.parseInt(yearElement.getText());
+                    if (exactMatch) { }
+                    else if (year - currYear == 0) {
+                        exactMatch = true;
+                        linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]"));
+                    }
+                    else {
+                        if (year > maxYear) {
+                            maxYear = year;
+                            linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
+                        }
                     }
                 }
             }
-        }
 
-        String link = linkElement.getAttribute("href");
-        driver.close();
+            String link = linkElement.getAttribute("href");
+            driver.close();
 
-        String saveDir = "output/unitOutlines";
-        try {
-            Files.createDirectory(Paths.get(saveDir));
-        } catch (IOException e) {
-        }
+            try {
+                Files.createDirectory(Paths.get(SAVE_DIRECTORY));
+            }
+            catch (IOException e) { }
 
-        try {
-            URL url = new URL(link);
-            InputStream in = url.openStream();
-            Files.copy(in, Paths.get(saveDir + "\\"+ unitcode.toUpperCase()+".pdf"), StandardCopyOption.REPLACE_EXISTING);
-            in.close();
-        } catch (MalformedURLException e) {
-        }
-        catch (IOException e) {
-        }
+            try {
+                URL url = new URL(link);
+                InputStream in = url.openStream();
+                Files.copy(in, Paths.get(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), StandardCopyOption.REPLACE_EXISTING);
+                in.close();
+            }
+            catch (MalformedURLException e) { }
+            catch (IOException e) { }
 
-        Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
-        event.getChannel().sendFile(new File(saveDir + "\\" + unitcode.toUpperCase()+".pdf"), message).queue();
+            Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
+            event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
+            successful = true;
+        }
+        return(successful);
+    }
+
+    private boolean updateFileArchive(String unitcode, CommandEvent event, Unit foundUnit) {
+        FirefoxDriver driver = loginCurtin();
+        downloadUnitOutline(unitcode, driver);
         return true;
     }
 
@@ -145,5 +185,68 @@ public class UnitOutline extends Command {
         WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
         wdw.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='unitCode']")));
         return driver;
+    }
+
+    private void downloadUnitOutline(String unitcode, FirefoxDriver driver) {
+        WebElement unit = driver.findElement(By.xpath("//input[@name='unitCode']"));
+        unit.sendKeys(unitcode);
+        WebElement button2 = driver.findElement(By.xpath("//input[@name='next']"));
+        button2.click();
+
+        int currYear = Year.now().getValue();
+        WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
+        wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("thead")));
+
+        int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
+        // int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
+
+        int maxYear = 0;
+        boolean exactMatch = false;
+        WebElement linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[2]/td[5]"));
+        for (int ii = 1; ii <= rowCount; ii++) {
+            if (driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals("Bentley Campus")) {
+                WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
+                int year = Integer.parseInt(yearElement.getText());
+                if (exactMatch) { }
+                else if (year - currYear == 0) {
+                    exactMatch = true;
+                    linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]"));
+                }
+                else {
+                    if (year > maxYear) {
+                        maxYear = year;
+                        linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
+                    }
+                }
+            }
+        }
+
+        String link = linkElement.getAttribute("href");
+        driver.close();
+
+        try {
+            Files.createDirectory(Paths.get(SAVE_DIRECTORY));
+        }
+        catch (IOException e) { }
+
+        try {
+            URL url = new URL(link);
+            InputStream in = url.openStream();
+            Files.copy(in, Paths.get(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), StandardCopyOption.REPLACE_EXISTING);
+            in.close();
+        }
+        catch (MalformedURLException e) { }
+        catch (IOException e) { }
+    }
+
+    private boolean isFileArchived(String unitcode) {
+        boolean fileArchive = false;
+        File file = new File(SAVE_DIRECTORY + unitcode.toUpperCase() + ".pdf");
+        long fileDate = file.lastModified();
+        long currDate = Instant.now().toEpochMilli();
+        if(currDate - fileDate < RETAIN_TIME) {
+            fileArchive = true;
+        }
+        return fileArchive;
     }
 }
