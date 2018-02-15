@@ -83,9 +83,7 @@ public class EnrolmentHelper {
         else {
             result = "**Failure!** No changes were made to enrolment.";
         }
-        event.replyInDm(result);
-        IO.write(result);
-        IO.write("");
+        displayStatus(result, event);
     }
 
     public static void displayLookupStatus(boolean change, CommandEvent event) {
@@ -96,8 +94,12 @@ public class EnrolmentHelper {
         else {
             result = "**Failure!** Lookup unsuccessful.";
         }
-        event.replyInDm(result);
-        IO.write(result);
+        displayStatus(result, event);
+    }
+
+    public static void displayStatus(String msg, CommandEvent event) {
+        event.replyInDm(msg);
+        IO.write(msg);
         IO.write("");
     }
 }
