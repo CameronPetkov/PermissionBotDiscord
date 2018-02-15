@@ -70,20 +70,7 @@ public class UnitOutline extends Command {
     }
 
     private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
-        System.setProperty("webdriver.gecko.driver", "E:\\Libraries\\Downloads\\geckodriver.exe");
-        Configuration config = JSONLoad.LoadJSON("data/config.json", Configuration.class);
-
-        FirefoxDriver driver = new FirefoxDriver();
-        driver.get("https://ctl.curtin.edu.au/teaching_learning_services/unit_outline_builder/search_published_UO.cfm");
-        WebElement id = driver.findElement(By.xpath("//input[@name='username']"));
-        id.sendKeys(config.getStudentID());
-        WebElement pw = driver.findElement(By.xpath("//input[@name='password']"));
-        pw.sendKeys(config.getStudentPassword());
-        WebElement button = driver.findElement(By.xpath("//input[@name='loginSubmit']"));
-        button.click();
-
-        WebDriverWait wdw = new WebDriverWait(driver, 40, 500);
-        wdw.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='unitCode']")));
+        FirefoxDriver driver = loginCurtin();
 
         WebElement unit = driver.findElement(By.xpath("//input[@name='unitCode']"));
         unit.sendKeys(unitcode);
@@ -91,6 +78,7 @@ public class UnitOutline extends Command {
         button2.click();
 
         int currYear = Year.now().getValue();
+        WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
         wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("thead")));
 
         int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
@@ -123,18 +111,39 @@ public class UnitOutline extends Command {
         String saveDir = "output/unitOutlines";
         try {
             Files.createDirectory(Paths.get(saveDir));
-        } catch (IOException e) {  }
+        } catch (IOException e) {
+        }
 
         try {
             URL url = new URL(link);
             InputStream in = url.openStream();
             Files.copy(in, Paths.get(saveDir + "\\"+ unitcode.toUpperCase()+".pdf"), StandardCopyOption.REPLACE_EXISTING);
             in.close();
-        } catch (MalformedURLException e) { }
-        catch (IOException e) { }
+        } catch (MalformedURLException e) {
+        }
+        catch (IOException e) {
+        }
 
         Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
         event.getChannel().sendFile(new File(saveDir + "\\" + unitcode.toUpperCase()+".pdf"), message).queue();
         return true;
+    }
+
+    private FirefoxDriver loginCurtin() {
+        System.setProperty("webdriver.gecko.driver", "E:\\Libraries\\Downloads\\geckodriver.exe");
+        Configuration config = JSONLoad.LoadJSON("data/config.json", Configuration.class);
+
+        FirefoxDriver driver = new FirefoxDriver();
+        driver.get("https://ctl.curtin.edu.au/teaching_learning_services/unit_outline_builder/search_published_UO.cfm");
+        WebElement id = driver.findElement(By.xpath("//input[@name='username']"));
+        id.sendKeys(config.getStudentID());
+        WebElement pw = driver.findElement(By.xpath("//input[@name='password']"));
+        pw.sendKeys(config.getStudentPassword());
+        WebElement button = driver.findElement(By.xpath("//input[@name='loginSubmit']"));
+        button.click();
+
+        WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
+        wdw.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[@name='unitCode']")));
+        return driver;
     }
 }
