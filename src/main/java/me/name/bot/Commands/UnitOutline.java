@@ -115,21 +115,14 @@ public class UnitOutline extends Command {
     }
 
     private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
-        boolean successful;
-        if(isFileArchived(unitcode)) {
-            Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
-            event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
-            successful = true;
-        }
-        else {
+        if(!isFileArchived(unitcode)) { //IF FILE NOT ARCHIVED
             FirefoxDriver driver = loginCurtin();
             downloadUnitOutline(unitcode, driver);
-
-            Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
-            event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
-            successful = true;
         }
-        return(successful);
+        Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
+        event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
+
+        return true;
     }
 
     private boolean isFileArchived(String unitcode) {
@@ -175,10 +168,10 @@ public class UnitOutline extends Command {
 
         int currYear = Year.now().getValue();
         WebDriverWait wdw = new WebDriverWait(driver, 30, 500);
-        wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("thead")));
+        wdw.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("tbody")));
 
         int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
-        // int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
+        //int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
 
         int maxYear = 0;
         boolean exactMatch = false;
@@ -190,7 +183,7 @@ public class UnitOutline extends Command {
                 if (exactMatch) { }
                 else if (year - currYear == 0) {
                     exactMatch = true;
-                    linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]"));
+                    linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
                 }
                 else {
                     if (year > maxYear) {
@@ -200,7 +193,6 @@ public class UnitOutline extends Command {
                 }
             }
         }
-
         String link = linkElement.getAttribute("href");
         driver.close();
 
