@@ -222,7 +222,7 @@ public class UnitOutline extends Command {
         int rowCount = driver.findElements(By.xpath("//table[@class='fullwidth']/tbody/tr")).size();
         //int colCount = driver.findElements(By.xpath("//table[@class='fullwidth']/thead/tr/th")).size();
 
-        int maxYear = 0;
+        int maxYear = 0, maxSemester = 1;
         boolean exactMatch = false;
         WebElement linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[2]/td[5]"));
 
@@ -231,21 +231,34 @@ public class UnitOutline extends Command {
                 WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
                 int yearText = Integer.parseInt(yearElement.getText());
                 if (exactMatch) {
+                    WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
+                    semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
+                    if (yearText - currYear == 0 && Integer.parseInt(semester) > maxSemester) {
+                        maxSemester = Integer.parseInt(semester);
+                        linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
+                    }
                 } else if (yearText - currYear == 0) {
                     exactMatch = true;
+
+                    WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
+                    semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
+                    maxSemester = Integer.parseInt(semester);
                     maxYear = yearText;
                     year = Integer.toString(maxYear);
                     linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
-                    WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
-                    semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
+                   // WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
+                    // semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
                 }
                 else {
-                    if (yearText > maxYear) {
+                    if (yearText >= maxYear) {
                         maxYear = yearText;
                         year = Integer.toString(maxYear);
                         linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
                         WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
                         semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
+                        if (Integer.parseInt(semester) > maxSemester) {
+                            maxSemester = Integer.parseInt(semester);
+                        }
                     }
                 }
             }
