@@ -42,7 +42,7 @@ public class UnitOutline extends Command {
 
     @Override
     protected void execute(CommandEvent event) {
-        String[] args = event.getArgs().split("\\s+"); //split by space
+        String[] args = event.getArgs().split(","); //split by comma
         EnrolmentHelper.logUserMessage(event);
 
         boolean change;
@@ -105,13 +105,15 @@ public class UnitOutline extends Command {
                     || x.getFullName().equalsIgnoreCase(arg) || x.getUnitCode().equalsIgnoreCase(arg)).findFirst().orElse(null);
             if (foundUnit != null) {
                 String unitcode = foundUnit.getUnitCode();
-               // if(args[1] != null) {
-                //    String campus = args[1].trim().toUpperCase();
-                //    change = checkUnit(unitcode, campus, "default", "default", event, foundUnit);
-               // }
-               // else {
+                try {
+                    if (args[1] != null) {
+                        String campus = args[1].trim();
+                        change = checkUnit(unitcode, campus, "default", "default", event, foundUnit);
+                    }
+                }
+                catch (ArrayIndexOutOfBoundsException e) {
                     change = checkUnit(unitcode, "Bentley Campus", "default", "default",  event, foundUnit);
-               // }
+                }
             }
             else {
                 EnrolmentHelper.giveErrorMessage(arg, event);
@@ -246,8 +248,6 @@ public class UnitOutline extends Command {
                     maxYear = yearText;
                     year = Integer.toString(maxYear);
                     linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
-                   // WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
-                    // semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
                 }
                 else {
                     if (yearText >= maxYear) {
