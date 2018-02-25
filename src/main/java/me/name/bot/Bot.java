@@ -16,7 +16,7 @@ public class Bot {
         CommandClientBuilder builder = new CommandClientBuilder();
 
         builder.setOwnerId(config.getOwnerID()); //user-id
-        builder.setPrefix("!");
+        builder.setPrefix("#");
         builder.addCommands(new Enrolment(), new Unenrolment(), new CourseSelect(), new Helper(), new UnitOutline());
         builder.setGame(null);
         CommandClient client = builder.build();
