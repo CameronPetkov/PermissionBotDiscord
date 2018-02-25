@@ -30,7 +30,7 @@ import java.time.Year;
 import java.util.Arrays;
 
 public class UnitOutline extends Command {
-    private final String SAVE_DIRECTORY = "output/unitOutlines/";
+    private final String SAVE_DIRECTORY = "output/";
     private final long RETAIN_TIME = 2592000000L; //30 days in ms
 
     public UnitOutline() {
@@ -72,7 +72,7 @@ public class UnitOutline extends Command {
             foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(name))).findFirst().orElse(null);
             if(foundUnit != null) {
                 String unitcode = foundUnit.getUnitCode();
-                change = checkUnit(unitcode, event, foundUnit);
+                change = checkUnit(unitcode, "Bentley Campus", "default", "default", event, foundUnit);
             }
             else {
                 event.replyInDm("Unit code/name needs to start with a letter.");
@@ -85,16 +85,16 @@ public class UnitOutline extends Command {
                         || x.getFullName().equalsIgnoreCase(arg2) || x.getUnitCode().equalsIgnoreCase(arg2)).findFirst().orElse(null);
                 if (foundUnit != null) {
                     String unitcode = foundUnit.getUnitCode();
-                    change = updateFileArchive(unitcode, event, foundUnit);
+                    change = updateFileArchive(unitcode, "Bentley Campus", "default", "default", event, foundUnit);
                 } else {
                     EnrolmentHelper.giveErrorMessage(arg, event);
                 }
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException e) { //no argument after update i.e. !uo update
                 String name = event.getChannel().getName();
                 foundUnit = Arrays.stream(units).filter(x -> Arrays.stream(x.getAbbreviation()).anyMatch(z -> z.equalsIgnoreCase(name))).findFirst().orElse(null);
                 if (foundUnit != null) {
                     String unitcode = foundUnit.getUnitCode();
-                    change = updateFileArchive(unitcode, event, foundUnit);
+                    change = updateFileArchive(unitcode, "Bentley Campus", "default", "default", event, foundUnit);
                 } else {
                     event.replyInDm("Unit code/name needs to start with a letter.");
                 }
@@ -105,7 +105,13 @@ public class UnitOutline extends Command {
                     || x.getFullName().equalsIgnoreCase(arg) || x.getUnitCode().equalsIgnoreCase(arg)).findFirst().orElse(null);
             if (foundUnit != null) {
                 String unitcode = foundUnit.getUnitCode();
-                change = checkUnit(unitcode, event, foundUnit);
+               // if(args[1] != null) {
+                //    String campus = args[1].trim().toUpperCase();
+                //    change = checkUnit(unitcode, campus, "default", "default", event, foundUnit);
+               // }
+               // else {
+                    change = checkUnit(unitcode, "Bentley Campus", "default", "default",  event, foundUnit);
+               // }
             }
             else {
                 EnrolmentHelper.giveErrorMessage(arg, event);
@@ -114,32 +120,75 @@ public class UnitOutline extends Command {
         return change;
     }
 
-    private boolean checkUnit(String unitcode, CommandEvent event, Unit foundUnit) {
-        if(!isFileArchived(unitcode)) { //IF FILE NOT ARCHIVED
+    private boolean checkUnit(String unitcode, String campus, String year, String semester, CommandEvent event, Unit foundUnit) {
+        if(!isFileArchived(unitcode, campus, year, semester)) { //IF FILE NOT ARCHIVED
             FirefoxDriver driver = loginCurtin();
-            downloadUnitOutline(unitcode, driver);
+            downloadUnitOutline(unitcode, campus, year, semester, driver);
         }
-        Message message = new MessageBuilder().append("Unit outline for " + WordUtils.capitalize(foundUnit.getFullName()) + ": ").build();
-        event.getChannel().sendFile(new File(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), message).queue();
+
+        if(year.equals("default") && semester.equals("default")) {
+            String dir = SAVE_DIRECTORY + unitcode.toUpperCase() + "/" + campus.replaceAll("\\s+","") + "/" + getLatestOutline(unitcode, campus) + ".pdf";
+            Message message = new MessageBuilder().append("Unit outline for **" + WordUtils.capitalize(foundUnit.getFullName()) + "**, *" + campus + " " + getLatestOutline(unitcode, campus) + "*: ").build();
+            event.getChannel().sendFile(new File(dir), message).queue();
+        }
 
         return true;
     }
 
-    private boolean isFileArchived(String unitcode) {
+    private boolean isFileArchived(String unitcode, String campus, String year, String semester) {
         boolean fileArchive = false;
-        File file = new File(SAVE_DIRECTORY + unitcode.toUpperCase() + ".pdf");
-        long fileDate = file.lastModified();
-        long currDate = Instant.now().toEpochMilli();
-        if(currDate - fileDate < RETAIN_TIME) {
-            fileArchive = true;
+        String dir = SAVE_DIRECTORY + unitcode.toUpperCase() + "/" + campus.replaceAll("\\s+","") + "/";
+        File fileDir = new File(dir);
+        File[] fileNames = fileDir.listFiles();
+        try {
+            if(year.equals("default") && semester.equals("default") && fileNames.length > 0) {
+                File file = new File(dir + getLatestOutline(unitcode, campus) + ".pdf");
+                long fileDate = file.lastModified();
+                long currDate = Instant.now().toEpochMilli();
+                if(currDate - fileDate < RETAIN_TIME) {
+                    fileArchive = true;
+                }
+            }
         }
+        catch (NullPointerException e) {
+            fileArchive = false;
+        }
+
+       // long fileDate = file.lastModified();
+      //  long currDate = Instant.now().toEpochMilli();
+      // if(currDate - fileDate < RETAIN_TIME) {
+         //   fileArchive = true;
+     //   }
         return fileArchive;
     }
 
-    private boolean updateFileArchive(String unitcode, CommandEvent event, Unit foundUnit) {
+    private boolean updateFileArchive(String unitcode, String campus, String year, String semester, CommandEvent event, Unit foundUnit) {
         FirefoxDriver driver = loginCurtin();
-        downloadUnitOutline(unitcode, driver);
+        downloadUnitOutline(unitcode, campus, year, semester, driver);
         return true;
+    }
+
+    private String getLatestOutline(String unitcode, String campus) {
+        String fileDate;
+        String dir = SAVE_DIRECTORY + unitcode.toUpperCase() + "/" + campus.replaceAll("\\s+","") + "/";
+        File fileDir = new File(dir);
+        File[] fileNames = fileDir.listFiles();
+        int maxFileYear = 0, maxFileSemester = 0;
+        for(int ii=0; ii<fileNames.length; ii++) {
+            int fileYear = Integer.parseInt(fileNames[ii].toString().substring(fileNames[ii].toString().indexOf("-") - 4, fileNames[ii].toString().indexOf("-")));
+            int fileSemester = Integer.parseInt(fileNames[ii].toString().substring(fileNames[ii].toString().indexOf(".pdf") - 1, fileNames[ii].toString().indexOf(".pdf")));
+            if (fileYear > maxFileYear) {
+                maxFileYear = fileYear;
+                maxFileSemester = fileSemester;
+            }
+            else if(fileYear == maxFileYear) {
+                if (fileSemester > maxFileSemester) {
+                    maxFileSemester = fileSemester;
+                }
+            }
+        }
+        fileDate = maxFileYear + "-S" + maxFileSemester;
+        return fileDate;
     }
 
     private FirefoxDriver loginCurtin() {
@@ -160,7 +209,7 @@ public class UnitOutline extends Command {
         return driver;
     }
 
-    private void downloadUnitOutline(String unitcode, FirefoxDriver driver) {
+    private void downloadUnitOutline(String unitcode, String campus, String year, String semester, FirefoxDriver driver) {
         WebElement unit = driver.findElement(By.xpath("//input[@name='unitCode']"));
         unit.sendKeys(unitcode);
         WebElement button2 = driver.findElement(By.xpath("//input[@name='next']"));
@@ -176,38 +225,58 @@ public class UnitOutline extends Command {
         int maxYear = 0;
         boolean exactMatch = false;
         WebElement linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[2]/td[5]"));
+
         for (int ii = 1; ii <= rowCount; ii++) {
-            if (driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals("Bentley Campus")) {
+            if (driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals(campus)) {
                 WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
-                int year = Integer.parseInt(yearElement.getText());
-                if (exactMatch) { }
-                else if (year - currYear == 0) {
+                int yearText = Integer.parseInt(yearElement.getText());
+                if (exactMatch) {
+                } else if (yearText - currYear == 0) {
                     exactMatch = true;
+                    maxYear = yearText;
+                    year = Integer.toString(maxYear);
                     linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
+                    WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
+                    semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
                 }
                 else {
-                    if (year > maxYear) {
-                        maxYear = year;
+                    if (yearText > maxYear) {
+                        maxYear = yearText;
+                        year = Integer.toString(maxYear);
+                        linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
+                        WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
+                        semester = semesterElement.getText().substring(semesterElement.getText().indexOf("Semester") + 9);
+                    }
+                }
+            }
+        }
+        if(!(year.equals("default") && semester.equals("default"))) {
+            for (int ii = 1; ii <= rowCount; ii++) {
+                if (driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[3]")).getText().equals(campus)) {
+                    WebElement yearElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[5]"));
+                    String yearText = yearElement.getText();
+                    WebElement semesterElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[4]"));
+                    String semesterText = semesterElement.getText();
+                    if (yearText.equals(year) && semesterText.equals(semester)) {
                         linkElement = driver.findElement(By.xpath("//table[@class='fullwidth']/tbody/tr[" + ii + "]/td[2]/a"));
                     }
                 }
             }
         }
+
         String link = linkElement.getAttribute("href");
         driver.close();
 
-        try {
-            Files.createDirectory(Paths.get(SAVE_DIRECTORY));
-        }
-        catch (IOException e) { }
+        String dir = SAVE_DIRECTORY + unitcode.toUpperCase() + "/" + campus.replaceAll("\\s+","");
+        new File(dir).mkdirs();
 
         try {
             URL url = new URL(link);
             InputStream in = url.openStream();
-            Files.copy(in, Paths.get(SAVE_DIRECTORY  + unitcode.toUpperCase() + ".pdf"), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(in, Paths.get(dir + "/" + year + "-S" + semester + ".pdf"), StandardCopyOption.REPLACE_EXISTING);
             in.close();
         }
-        catch (MalformedURLException e) { }
-        catch (IOException e) { }
+        catch (MalformedURLException e) { System.out.println("MALFORMEDURL" + e.getMessage()); }
+        catch (IOException e) { System.out.println("IOEXCEPTION" + e.getMessage()); }
     }
 }
