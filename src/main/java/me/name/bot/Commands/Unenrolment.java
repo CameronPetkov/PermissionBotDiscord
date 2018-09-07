@@ -75,6 +75,6 @@ public class Unenrolment extends Command {
                 }
             }
         }
-        EnrolmentHelper.displayChangeStatus(changes, event);
+        EnrolmentHelper.displayChangeStatus( changes, event );
     }
 }
